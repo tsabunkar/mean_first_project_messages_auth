@@ -4,7 +4,7 @@ import {FormsModule} from '@angular/forms';
  
 import { AppComponent } from "./app.component";
 import { MessageComponent } from './messages/message.component';
-import { MessageListComponent } from './messages/message-list.component';
+import { MessageListComponent } from './messages/message-list/message-list.component';
 import { MessageInputComponent } from './messages/message-input/message-input.component';
 
 

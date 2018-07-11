@@ -11,8 +11,8 @@ user.model.ts (or) message.model.ts-> Is a standard way of naming the model/DTO
 public firstsName?: string, 
 
 ? --(means)--> these properties is optional, we r not 
-forcing the end-client to enter this property,if end-client not define this 
-prop then value will be undefined
+forcing the end-client to enter value for this property while creating object using C.I,
+if end-client not define this prop then value will be undefined
 
 
 ============================================================
@@ -25,7 +25,7 @@ ex- a-component this zen code will completely generate componet structure
 Directives ->
 *ngIf, *ngFor (built-in Directives) -> structural directive (which will change the structure of DOM)
   <my-message> (userdefine selector/ userdefine Directives) 
-  <div [ngStyle]="{backgroundColor: 'red'}"></div> -> userdefine attribute directive 
+  <div [ngStyle]="{backgroundColor: 'red'}"></div> -> builtin attribute directive 
 
   So, components are Directives with views (template)
   Directives are template + logic(.ts file)

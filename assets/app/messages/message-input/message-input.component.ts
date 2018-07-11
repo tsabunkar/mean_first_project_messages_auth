@@ -9,4 +9,7 @@ export class MessageInputComponent implements OnInit {
     constructor() { }
 
     ngOnInit() { }
+    onSave(inputTextValue : string) {
+        console.log(inputTextValue);
+    }
 }

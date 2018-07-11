@@ -12,7 +12,7 @@ export class MessageComponent implements OnInit {
 
     ngOnInit() { }
 
-    mycolor : string = "red";//using attribute directives
+    mycolor : string = "lightblue";//using attribute directives
 
     @Input() msgObj: Message; //Using @Input() decorator, which tells that the value of msg will be passed from 
     //parentComponet(i.e-AppComponent) to childComponet(i.e-MessageComponent)

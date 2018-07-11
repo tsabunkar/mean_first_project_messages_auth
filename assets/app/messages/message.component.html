@@ -1,6 +1,7 @@
 <input type="text" [(ngModel)]="msgObj.content"> 
 <!-- two way binding -->
-<div class="panel panel-default"  [ngStyle]="{backgroundColor: mycolor}" (mouseenter)="mycolor = 'green'">
+<div class="panel panel-default"  [ngStyle]="{backgroundColor: mycolor}" 
+    (mouseenter)="mycolor = 'white'"  (mouseleave)="mycolor = 'lightblue'" >
     <div class="panel-body">
         {{msgObj.content}}
     </div>
