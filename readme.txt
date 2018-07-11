@@ -22,3 +22,14 @@ use this plugin for ZEN CODING (i.e- shortcut for generating code)
 ex- a-component this zen code will completely generate componet structure
 
 ============================================================
+Directives ->
+*ngIf, *ngFor (built-in Directives) -> structural directive (which will change the structure of DOM)
+  <my-message> (userdefine selector/ userdefine Directives) 
+  <div [ngStyle]="{backgroundColor: 'red'}"></div> -> userdefine attribute directive 
+
+  So, components are Directives with views (template)
+  Directives are template + logic(.ts file)
+
+Directives uses 'selector' to let angular know which part of the HTML code represent instruction
+
+============================================================
