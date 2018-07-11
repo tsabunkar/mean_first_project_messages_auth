@@ -1,6 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import { Message } from './models/message.model'
+import { Message } from '../models/message.model'
+
+
 @Component({
     selector: 'my-message',
     templateUrl: './message.component.html',
@@ -10,7 +12,9 @@ import { Message } from './models/message.model'
 export class MessageComponent implements OnInit {
     constructor() { }
 
-    ngOnInit() { }
+    ngOnInit() { 
+       
+    }
 
     mycolor : string = "lightblue";//using attribute directives
 

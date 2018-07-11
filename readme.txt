@@ -33,3 +33,7 @@ Directives ->
 Directives uses 'selector' to let angular know which part of the HTML code represent instruction
 
 ============================================================
+
+ pathMatch: 'full'  -> only redirect to specific component if the complete path matches
+
+ ============================================================

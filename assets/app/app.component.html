@@ -1,14 +1,6 @@
 <div class="container">
-    <div class="row">
-        <my-message-input></my-message-input>
-    </div>
-    <br/>
-    <div class="row">
-        <my-message-list></my-message-list>
-        <!-- <div class="col-md-8 col-md-offset-2">
-           //  <my-message [msgObj]="messageObj" ></my-message>   my-message userdefine tag/selector we r adding an userdefine attribute msgObj(which has been property binded with messageObj)
-           
-            <my-message [msgObj]="listOfmessage" (editClicked)="messageObj.content = $event" *ngFor="let listOfmessage of messageObj"></my-message>
-        </div> -->
-    </div>
+    <my-header></my-header>
+    <br>
+    <!-- this router-outlet tag ->tells angular, in this place u shld load/render the components specified in app.routing.ts file-->
+    <router-outlet></router-outlet>
 </div>

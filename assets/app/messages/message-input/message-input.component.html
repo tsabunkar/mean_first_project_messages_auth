@@ -1,7 +1,11 @@
 <div class="col-md-8 col-md-offset-2">
-    <div class="form-group">
-        <label for="content">Content</label>
-        <input type="text" id="content" class="form-control" #inpTextId>
-    </div>
-    <button class="btn btn-primary" type="submit" (click)="onSave(inpTextId.value)">Save</button>
+    <form (ngSubmit)="onSubmitOfForm(myFormId)" #myFormId="ngForm" ngNativeValidate>
+        <div class="form-group">
+            <label for="contentId">Content</label>
+            <!-- <input type="text" id="content" class="form-control" #inpTextId> -->
+            <input type="text" id="contentId" class="form-control" name="contentName" ngModel required>
+        </div>
+        <!-- <button class="btn btn-primary" type="submit" (click)="onSave(inpTextId.value)">Save</button> -->
+        <button class="btn btn-primary" type="submit">Save</button>
+    </form>
 </div>
