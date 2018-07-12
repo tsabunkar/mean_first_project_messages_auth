@@ -12,5 +12,6 @@ const MY_APP_ROUTES: Routes = [
     { path: "", redirectTo: '/messages', pathMatch: 'full' },
     { path: "**", redirectTo: "pagenotfound", pathMatch: "full" }
 ]
-
+//MY_APP_ROUTES -> is the root route(which handles all routes for- 'localhost:3000/___')
+//MY_AUTH_ROUTES -> is the child route for '/auth'(which handles all routes for- 'localhost:3000/auth/___')
 export const myAppRouting = RouterModule.forRoot(MY_APP_ROUTES);//RouterModule ->this will register our user-define routes to -> angular router module libr

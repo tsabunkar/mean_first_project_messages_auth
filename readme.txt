@@ -37,3 +37,8 @@ Directives uses 'selector' to let angular know which part of the HTML code repre
  pathMatch: 'full'  -> only redirect to specific component if the complete path matches
 
  ============================================================
+ 
+//MY_APP_ROUTES -> is the root route(which handles all routes for- 'localhost:3000/___')
+//MY_AUTH_ROUTES -> is the child route for '/auth'(which handles all routes for- 'localhost:3000/auth/___')
+
+ ============================================================

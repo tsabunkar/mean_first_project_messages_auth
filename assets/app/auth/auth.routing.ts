@@ -10,5 +10,5 @@ export const MY_AUTH_ROUTES: Routes = [
     { path: 'singup', component: SignUpComponent },
     { path: 'singin', component: SignInComponent },
     { path: 'logout', component: LogoutComponent },
-
 ]
+//MY_AUTH_ROUTES -> is the child route for '/auth'
