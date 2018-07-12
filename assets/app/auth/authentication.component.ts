@@ -5,6 +5,7 @@ import { Component, OnInit } from '@angular/core';
     templateUrl: './authentication.component.html'
 })
 
+//parent component for auth
 export class AuthenticationComponent implements OnInit {
     constructor() { }
 

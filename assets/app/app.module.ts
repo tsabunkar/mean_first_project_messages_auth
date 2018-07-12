@@ -7,7 +7,7 @@ import { MessageComponent } from './messages/message/message.component';
 import { MessageListComponent } from './messages/message-list/message-list.component';
 import { MessageInputComponent } from './messages/message-input/message-input.component';
 import { MessagesComponent } from './messages/messages.component';
-import { AuthenticationComponent } from './auth/authentication/authentication.component';
+import { AuthenticationComponent } from './auth/authentication.component';
 import { HeaderComponent } from './header/header.component';
 import { myAppRouting } from './myrouting/app.routing';
 import { PageNotFoundComponent } from './pagenotfound/pagenotfound.component';
