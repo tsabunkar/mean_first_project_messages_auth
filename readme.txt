@@ -42,3 +42,14 @@ Directives uses 'selector' to let angular know which part of the HTML code repre
 //MY_AUTH_ROUTES -> is the child route for '/auth'(which handles all routes for- 'localhost:3000/auth/___')
 
  ============================================================
+
+In Angular we can build form in two-ways
+1) Template driven approach(All the validation r written in Template(.html) file )
+2) Reactive approach(data driven approach) (All the validation r written in Component (.ts) file)
+
+Note:
+Inside imports array in app.module.ts we shld add following ->
+ imports[FormsModule] -> Template Driven approach
+ imports[ReactiveFormsModule] -> Reactive approach
+
+  ============================================================

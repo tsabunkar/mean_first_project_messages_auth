@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from "./app.component";
 import { MessageComponent } from './messages/message/message.component';
@@ -30,7 +30,7 @@ import { SignUpComponent } from './auth/signup/signup.component';
         SignUpComponent
 
     ],
-    imports: [BrowserModule, FormsModule, myAppRouting],//builtin & user-define Modules(package)
+    imports: [BrowserModule, FormsModule, myAppRouting, ReactiveFormsModule],//builtin & user-define Modules(package)
     //myAppRouting-> user-define module(in this we r twiking router module)
     bootstrap: [AppComponent]
 })

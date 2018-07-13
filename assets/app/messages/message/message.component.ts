@@ -1,6 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { Message } from '../models/message.model'
+import { MessageService } from '../myservice/message.service';
 
 
 @Component({
@@ -10,13 +11,13 @@ import { Message } from '../models/message.model'
 })
 
 export class MessageComponent implements OnInit {
-    constructor() { }
+    constructor(private messageService: MessageService) { }
 
-    ngOnInit() { 
-       
+    ngOnInit() {
+
     }
 
-    mycolor : string = "lightblue";//using attribute directives
+    mycolor: string = "lightblue";//using attribute directives
 
     @Input() msgObj: Message; //Using @Input() decorator, which tells that the value of msg will be passed from 
     //parentComponet(i.e-AppComponent) to childComponet(i.e-MessageComponent)
@@ -25,4 +26,14 @@ export class MessageComponent implements OnInit {
     // @Input('childObj') msgObj : Message
     //but, we shld have also change in app.component.html   <my-message [childObj]="messageObj"></my-message>
 
+
+    @Output() editClicked = new EventEmitter<string>();
+
+    onEdit() {
+        this.editClicked.emit('A new value')
+    }
+
+    onDelete() {
+        this.messageService.deletedMessage(this.msgObj)
+    }
 }
