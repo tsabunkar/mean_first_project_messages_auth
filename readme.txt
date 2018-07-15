@@ -53,3 +53,45 @@ Inside imports array in app.module.ts we shld add following ->
  imports[ReactiveFormsModule] -> Reactive approach
 
   ============================================================
+Http module has been depricated in angular v6, so start using HttpClient module instead
+Note : -) Http module : imported from  @angular/http
+       and in app.module.ts -> import  HttpModule in imports[]
+       -) HttpClient module : imported from @angular/common/http
+       and in app.module.ts -> import  HttpClientModule in imports[]
+       
+ ============================================================
+  
+In RxJs v6 -> many things have changed 
+for ex-
+The following operator names were changed because their dot-chained
+names are reserved words in JavaScript:
+do -> tap
+catch -> catchError
+switch -> switchAll
+finally -> finalize
+
+To convert dot-chained operators to pipeable operators, wrap all operators in the pipe()
+method from the source observable, remove the dots, and add commas to pass each operation 
+to pipe() as an argument.
+for ex -
+  //these dot-chanied technique has been depricated
+
+         this.http.post<Message>()
+                  .map((response : Response => {
+                      response.json();
+                  }))
+                  .do()
+                  .catch();
+
+  //Now pipeable technique has been introduced in v6
+          this.http.post<Message>()
+                    .pipe(
+                        map((response: Response) =>response),
+                        catchError(err => of('error found')),
+                          );
+
+  ============================================================                         
+Synchronous error handling (placing a call to the Observable.subscribe() 
+method within a try/catch block) is no longer supported. If it is used, 
+it must be replaced with asynchronous error handling, using the error
+ callback in the Observable.subscribe() method.

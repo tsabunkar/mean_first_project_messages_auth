@@ -12,8 +12,8 @@ const MessageSchema = new Schema({
     }
 });
 
-mongoose.model('mess_collec', MessageSchema)
+var MessageModel = mongoose.model('mess_collec', MessageSchema)
 
 module.exports = {
-    MessageSchema
+    MessageModel
 }

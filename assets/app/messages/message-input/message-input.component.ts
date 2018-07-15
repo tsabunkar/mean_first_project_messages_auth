@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Message } from '../models/message.model';
 import { MessageService } from '../myservice/message.service';
 import { NgForm } from '@angular/forms';
+import { Observable } from '../../../../node_modules/rxjs';
+
 
 @Component({
     selector: 'my-message-input',
@@ -25,11 +27,18 @@ export class MessageInputComponent implements OnInit {
          // console.log(this.messageService.getMessages());
      } */
     onSubmitOfForm(myform: NgForm) {
-        console.log(myform);
-        console.log(myform.value.contentName);
-
+        // console.log(myform);
+        // console.log(myform.value.contentName);
         const message = new Message(myform.value.contentName, "Admin");
-        this.messageService.addMessage(message);
+
+        const ObservableObj: Observable<Message> = this.messageService.addMessage(message);
+        ObservableObj.subscribe(
+            (mess: Message) => {
+                console.log(mess);
+            },
+            err => { console.log(err); },
+
+        )
 
         myform.resetForm();//reseting all the form fields like -> clearing the input text box, clearning check box,etc
     }
