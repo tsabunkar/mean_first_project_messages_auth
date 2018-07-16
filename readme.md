@@ -90,8 +90,13 @@ for ex -
                         catchError(err => of('error found')),
                           );
 
-  ============================================================                         
+                        
 Synchronous error handling (placing a call to the Observable.subscribe() 
 method within a try/catch block) is no longer supported. If it is used, 
 it must be replaced with asynchronous error handling, using the error
  callback in the Observable.subscribe() method.
+
+   ============================================================ 
+  <b> EventEmitter</b> must be imported from "@angular/core" package but not from "event" package
+
+      ============================================================

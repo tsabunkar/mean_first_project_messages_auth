@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { Message } from '../models/message.model'
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
@@ -37,7 +37,7 @@ export class MessageService {
             })
         };
 
-        this.messageList.push(message);
+
         const dataToSend = JSON.stringify(message)
         //post() -> return type of ->Observable<Response>
         //pipe() -> return type of ->Observable<{}>
@@ -46,14 +46,15 @@ export class MessageService {
             map((response: Response) => {
                 console.log(response);
                 console.log(response.toString());
-                return response;//must return (or else) when subscribe we will get undefined
+                const respondedMessage = response["obj"];
+                const newlyCreatedMess = new Message(respondedMessage.content, "Admin", respondedMessage._id, null)
+                this.messageList.push(newlyCreatedMess);//if new message is created then only push that newlyCreatedMessage into the MessageList Array
+                return newlyCreatedMess;//must return (or else) when subscribe we will get undefined
             }),
             catchError(err => of(err))//of (operator)->	ArrayObservable
         );
 
         return pipeObj;
-
-
 
         /* //these dot-chanied technique has been depricated
          this.http.post<Message>('http://localhost:4000/message', dataToSend, httpOptions)
@@ -76,8 +77,8 @@ export class MessageService {
                     let listOfmessagesFrmBackend = resp["listMessages"];// is similar to -> resp.listMessages;
                     let transformedBackendDtoToFrontendDto: Message[] = [];
                     for (const mess of listOfmessagesFrmBackend) {
-                        console.log(mess);
-                        transformedBackendDtoToFrontendDto.push(new Message(mess.content, "Admin", mess.id, null))
+                        // console.log(mess);
+                        transformedBackendDtoToFrontendDto.push(new Message(mess.content, "Admin", mess._id, null))
                     };
                     this.messageList = transformedBackendDtoToFrontendDto;
 
@@ -87,24 +88,35 @@ export class MessageService {
             )
     }
 
+    messageIsEdited = new EventEmitter<Message>();//to know weather edit btn is clicked
+
+    editMessage(message: Message) {
+        this.messageIsEdited.emit(message);
+    }
+
+    updateMessage(message: Message): Observable<Message> {
+
+        const httpHeaderOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            })
+        };
+
+        console.log("]]]]]]]]]]]]]]]");
+        console.log(message.messageId);
+        const dataToSend = JSON.stringify(message)
+        return this.http.patch<Message>('http://localhost:4000/message/' + message.messageId, dataToSend, httpHeaderOptions)
+            .pipe(
+                map((response: Response) => { return response }),
+                catchError(err => of(err))
+            );
+
+    }
+
     deletedMessage(message: Message) {
         this.messageList.splice(this.messageList.indexOf(message), 1);//removing one element from the messageList array
     }
 
-    private handleError(error: HttpErrorResponse) {
-        if (error.error instanceof ErrorEvent) {
-            // A client-side or network error occurred. Handle it accordingly.
-            console.error('An error occurred:', error.error.message);
-        } else {
-            // The backend returned an unsuccessful response code.
-            // The response body may contain clues as to what went wrong,
-            console.error(
-                `Backend returned code ${error.status}, ` +
-                `body was: ${error.error}`);
-        }
-        // return an observable with a user-facing error message
-        return throwError(
-            'Something bad happened; please try again later.');
-    };
+
 
 }

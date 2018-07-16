@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 import { Message } from '../models/message.model'
 import { MessageService } from '../myservice/message.service';
@@ -27,10 +27,10 @@ export class MessageComponent implements OnInit {
     //but, we shld have also change in app.component.html   <my-message [childObj]="messageObj"></my-message>
 
 
-    @Output() editClicked = new EventEmitter<string>();
+
 
     onEdit() {
-        this.editClicked.emit('A new value')
+        this.messageService.editMessage(this.msgObj)
     }
 
     onDelete() {

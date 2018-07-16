@@ -3,9 +3,16 @@
         <div class="form-group">
             <label for="contentId">Content</label>
             <!-- <input type="text" id="content" class="form-control" #inpTextId> -->
-            <input type="text" id="contentId" class="form-control" name="contentName" ngModel required>
+            <input type="text"
+                     id="contentId"
+                      class="form-control"
+                       name="contentName" 
+                       [ngModel]="messageToLoadIntoInputFieldWhenEdit?.content"
+                       required>
         </div>
         <!-- <button class="btn btn-primary" type="submit" (click)="onSave(inpTextId.value)">Save</button> -->
         <button class="btn btn-primary" type="submit">Save</button>
+        <!-- <button class="btn btn-danger" type="reset">Clear</button> this wont work to reset the angular form -->
+        <button class="btn btn-danger" type="button" (click)="resetMyForm(myFormId)">Clear</button>
     </form>
 </div>

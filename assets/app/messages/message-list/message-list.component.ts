@@ -6,7 +6,10 @@ import { MessageService } from '../myservice/message.service';
     selector: 'my-message-list',
     templateUrl: `
     <div class="col-md-8 col-md-offset-2"> 
-    <my-message [msgObj]="listOfmessage" (editClicked)="listOfmessage.content = $event" *ngFor="let listOfmessage of messageObj"></my-message>
+    <my-message [msgObj]="listOfmessage"
+            
+                 *ngFor="let listOfmessage of messageObj">
+    </my-message>
     </div>
     `,
     // providers: [MessageService]//injecting service per component level
