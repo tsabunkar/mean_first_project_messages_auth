@@ -26,6 +26,8 @@ export class MessageService {
         this.messageList.splice(this.messageList.indexOf(message), 1);//removing one element from the messageList array
     } */
 
+
+
     //Using Observable to make server calls from backend(nodejs & mongodb)
     addMessage(message: Message): Observable<Message> {
         const httpHeaderOptions = {
@@ -64,8 +66,25 @@ export class MessageService {
 
     }
 
-    getMessages() {
-        return this.messageList;
+    getMessages(): Observable<Message[]> {
+        return this.http.get<Message[]>('http://localhost:4000/message')
+            .pipe(
+                map((resp: Response) => {
+                    console.log("=======");
+                    console.log(resp);
+                    // console.log(resp.toString().message);
+                    let listOfmessagesFrmBackend = resp["listMessages"];// is similar to -> resp.listMessages;
+                    let transformedBackendDtoToFrontendDto: Message[] = [];
+                    for (const mess of listOfmessagesFrmBackend) {
+                        console.log(mess);
+                        transformedBackendDtoToFrontendDto.push(new Message(mess.content, "Admin", mess.id, null))
+                    };
+                    this.messageList = transformedBackendDtoToFrontendDto;
+
+                    return transformedBackendDtoToFrontendDto;
+                }),
+                catchError(err => of(err))
+            )
     }
 
     deletedMessage(message: Message) {

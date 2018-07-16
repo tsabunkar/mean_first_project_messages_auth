@@ -26,4 +26,22 @@ router.post('/', function (req, res, next) {
     })
 });
 
+router.get('/', function (req, res, next) {
+    MessageModel.find()
+        .exec((err, documentMess) => { //exec -> Executes the query
+            if (err) {
+                return res.status(500).json({
+                    title: 'An error has occured bro!',
+                    error: err
+                })
+            }
+
+            res.status(201).json({
+                message: "Successfully retrieved",
+                listMessages: documentMess
+            })
+
+        })
+})
+
 module.exports = router;

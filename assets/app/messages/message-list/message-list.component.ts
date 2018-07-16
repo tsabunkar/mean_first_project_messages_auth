@@ -19,8 +19,13 @@ export class MessageListComponent implements OnInit {
 
     //life-cycle hook of angular, this method will be invoked only when this component is initalized
     ngOnInit() {
-        this.messageObj = this.messageService.getMessages();
-        console.log(this.messageObj);
+       this.messageService.getMessages()
+       .subscribe(
+           (listOfmessages : Message[]) =>{
+               this.messageObj = listOfmessages
+           }
+       )
+        
      }
 
    /*  messageObj: Message[] = [
