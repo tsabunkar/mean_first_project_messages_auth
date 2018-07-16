@@ -123,11 +123,16 @@ export class MessageService {
     //DELETE
     //http://localhost:4000/message/124ef455D
     deletedMessage(message: Message): Observable<Message> {
-        this.messageList.splice(this.messageList.indexOf(message), 1);//removing one element from the messageList array
         console.log("invoking delete message");
         return this.http.delete<Message>(this.url + '/' + message.messageId)
             .pipe(
-                map((response: Response) => response),
+                map((response: Response) => {
+                    if (response["obj"]) {//if valid object is returned, which means message got deleted
+                        this.messageList.splice(this.messageList.indexOf(message), 1);//removing one element from the messageList array
+                        console.log(response);
+                        return response
+                    }
+                }),
                 catchError(err => of(err))
             )
     }

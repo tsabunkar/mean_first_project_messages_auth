@@ -3,7 +3,10 @@ var router = express.Router();
 var {
     MessageModel
 } = require('../models/message')
-
+const _ = require('lodash');
+const {
+    ObjectID
+} = require('mongodb')
 
 //POST
 //localhost:3000/message/
@@ -50,7 +53,11 @@ router.get('/', function (req, res, next) {
 
 //PATCH
 //localhost:3000/message/ObjectId
-router.patch('/:id', function (req, res, next) {
+//below we r finding and then again saving the document, here mongoose is ensuring that if same ObjectId then
+//instead of creating a new document just update the existing document
+//I didn't like this approach :)
+
+/* router.patch('/:id', function (req, res, next) {
     MessageModel.findById(req.params.id, (err, messObjRetrievedForParticId) => {
         console.log(messObjRetrievedForParticId);
         if (err) {
@@ -69,7 +76,10 @@ router.patch('/:id', function (req, res, next) {
         }
 
         messObjRetrievedForParticId.content = req.body.content; //assinging the updated mess from frontend to backend
-        messObjRetrievedForParticId.save((err, result) => {
+        messObjRetrievedForParticId.save((err, result) => {//saving this document (just like new document),
+            // but mongoose ensures that if same objectId is present then don't save as new docum but 
+            //rather update the exisitng document
+            
             if (err) {
                 return res.status(500).json({
                     title: 'An error has occured bro!',
@@ -85,6 +95,43 @@ router.patch('/:id', function (req, res, next) {
         });
 
     })
+}) */
+
+router.patch('/:id', function (req, res, next) {
+    let uriToUpdate = req.params.id;
+
+    var rxedBody = _.pick(req.body, ['content'])//I shld allow to update only content property
+    if (!ObjectID.isValid(uriToUpdate)) { //If Id is not valid format then exec this if body
+        response.status(404).send({
+            title: 'An error has occured bro!, due to invalid format of id'
+        });
+        // console.log('Id Format is not valid');
+        return
+    }
+
+    MessageModel.findOneAndUpdate({ _id: uriToUpdate }, { $set: rxedBody }, { new: true })
+        .then((updatedMessObj) => {
+
+            if (!updatedMessObj) {
+                return res.status(500).json({
+                    title: 'No message document is found in the collection',
+                    error: {
+                        message: 'Message not found bro!'
+                    }
+                })
+            }
+
+            //success scenario
+            res.status(200).json({
+                message: "Updated Message!!",
+                obj: updatedMessObj
+            })
+        }).catch((err) => {
+            return res.status(500).json({
+                title: 'An error has occured bro!',
+                error: err
+            })
+        });
 })
 
 //DELETE

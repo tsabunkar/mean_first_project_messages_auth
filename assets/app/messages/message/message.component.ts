@@ -37,9 +37,9 @@ export class MessageComponent implements OnInit {
         this.messageService.deletedMessage(this.msgObj)
             .subscribe(
                 result => {
-                    console.log('Message Obj which got deleted!!');
                     console.log(result);
-                }
+                },
+                err =>{console.log( err);}
             )
     }
 }
