@@ -12,6 +12,7 @@ export class MessageService {
     constructor(private http: HttpClient) { }
 
     private messageList: Message[] = [];
+    private url: string = 'http://localhost:4000/message';
 
     /* //these methods r temporary messages which r playing with array but doesn't store them inside a DB
     addMessage(message: Message) {
@@ -29,19 +30,20 @@ export class MessageService {
 
 
     //Using Observable to make server calls from backend(nodejs & mongodb)
+    //POST
+    //http://localhost:4000/message
     addMessage(message: Message): Observable<Message> {
+        console.log("invoking add message");
+
         const httpHeaderOptions = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json',
                 // 'Authorization': 'my-auth-token'
             })
         };
-
-
         const dataToSend = JSON.stringify(message)
-        //post() -> return type of ->Observable<Response>
-        //pipe() -> return type of ->Observable<{}>
-        let observableObj: Observable<Message> = this.http.post<Message>('http://localhost:4000/message', dataToSend, httpHeaderOptions);
+        //post() -> return type of ->Observable<Response> & //pipe() -> return type of ->Observable<{}>
+        let observableObj: Observable<Message> = this.http.post<Message>(this.url, dataToSend, httpHeaderOptions);
         let pipeObj: Observable<Message> = observableObj.pipe<Message>(//any no of operations like map(), filter(),scan(),first(), last(), catchError(), mergeMap(), switchMap(),etc 
             map((response: Response) => {
                 console.log(response);
@@ -64,14 +66,16 @@ export class MessageService {
          .do()
          .catch();
          */
-
     }
 
+
+    //GET_ALL
+    //http://localhost:4000/message
     getMessages(): Observable<Message[]> {
-        return this.http.get<Message[]>('http://localhost:4000/message')
+        console.log("invoking getAll message");
+        return this.http.get<Message[]>(this.url)
             .pipe(
                 map((resp: Response) => {
-                    console.log("=======");
                     console.log(resp);
                     // console.log(resp.toString().message);
                     let listOfmessagesFrmBackend = resp["listMessages"];// is similar to -> resp.listMessages;
@@ -91,9 +95,12 @@ export class MessageService {
     messageIsEdited = new EventEmitter<Message>();//to know weather edit btn is clicked
 
     editMessage(message: Message) {
+        console.log("invoking edit message");
         this.messageIsEdited.emit(message);
     }
 
+    //PATCH
+    //http://localhost:4000/message/124ef455D
     updateMessage(message: Message): Observable<Message> {
 
         const httpHeaderOptions = {
@@ -102,10 +109,10 @@ export class MessageService {
             })
         };
 
-        console.log("]]]]]]]]]]]]]]]");
+        console.log("invoking update message");
         console.log(message.messageId);
         const dataToSend = JSON.stringify(message)
-        return this.http.patch<Message>('http://localhost:4000/message/' + message.messageId, dataToSend, httpHeaderOptions)
+        return this.http.patch<Message>(this.url + '/' + message.messageId, dataToSend, httpHeaderOptions)
             .pipe(
                 map((response: Response) => { return response }),
                 catchError(err => of(err))
@@ -113,10 +120,16 @@ export class MessageService {
 
     }
 
-    deletedMessage(message: Message) {
+    //DELETE
+    //http://localhost:4000/message/124ef455D
+    deletedMessage(message: Message): Observable<Message> {
         this.messageList.splice(this.messageList.indexOf(message), 1);//removing one element from the messageList array
+        console.log("invoking delete message");
+        return this.http.delete<Message>(this.url + '/' + message.messageId)
+            .pipe(
+                map((response: Response) => response),
+                catchError(err => of(err))
+            )
     }
-
-
 
 }

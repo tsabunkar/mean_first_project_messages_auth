@@ -4,6 +4,8 @@ var {
     MessageModel
 } = require('../models/message')
 
+
+//POST
 //localhost:3000/message/
 router.post('/', function (req, res, next) {
     var message = new MessageModel({
@@ -26,6 +28,8 @@ router.post('/', function (req, res, next) {
     })
 });
 
+//GETALL
+//localhost:3000/message/
 router.get('/', function (req, res, next) {
     MessageModel.find()
         .exec((err, documentMess) => { //exec -> Executes the query
@@ -44,6 +48,8 @@ router.get('/', function (req, res, next) {
         })
 })
 
+//PATCH
+//localhost:3000/message/ObjectId
 router.patch('/:id', function (req, res, next) {
     MessageModel.findById(req.params.id, (err, messObjRetrievedForParticId) => {
         console.log(messObjRetrievedForParticId);
@@ -79,6 +85,33 @@ router.patch('/:id', function (req, res, next) {
         });
 
     })
+})
+
+//DELETE
+//localhost:3000/message/ObjectId
+router.delete('/:id', function (req, res, next) {
+    MessageModel.findOneAndRemove({ _id: req.params.id }).then((messObjDeleted) => {
+        if (!messObjDeleted) {
+            return res.status(500).json({
+                title: 'No message document is found in the collection for this particular ObjectId',
+                error: {
+                    message: 'ObjectId not found bro!'
+                }
+            })
+        }
+
+        res.status(200).json({
+            message: "Deleted Message!!",
+            obj: messObjDeleted
+        })
+
+
+    }).catch((err) => {
+        return res.status(500).json({
+            title: 'An error has occured bro!',
+            error: err
+        })
+    });
 })
 
 module.exports = router;
