@@ -23,6 +23,7 @@
     "@angular/platform-server": "*",
     "@angular/router": "*",
     "@angular/upgrade": "*",
+    "bcryptjs": "^2.4.3",
     "body-parser": "*",
     "concurrently": "*",
     "cookie-parser": "*",

@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var appRoutes = require('./routes/app');
 var messageRoutes = require('./routes/messages');
+var userRoutes = require('./routes/user');
 
 
 mongoose.connect('mongodb://localhost:27017/mymongodb', {
@@ -37,8 +38,10 @@ app.use(function (req, res, next) {
     next();
 });
 
+app.use('/user', userRoutes);
 app.use('/message', messageRoutes); //this is specfic routes which shld be first then generic routes like-'/'
 app.use('/', appRoutes); //generic routes which shld be not be written first bcoz - then all the routes will be navigated to appRoutes
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

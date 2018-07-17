@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '../../../../node_modules/@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { AuthService } from '../authservice/auth.service';
+import { User } from '../models/user.model';
 
 @Component({
     selector: 'signup-component',
@@ -8,7 +10,11 @@ import { FormGroup, FormControl, Validators } from '../../../../node_modules/@an
 
 //Reactive form approach
 export class SignUpComponent implements OnInit {
-    constructor() { }
+
+    constructor(private authService: AuthService) {//This AuthService is injected at application level
+        //(check in app.module.ts), but if any component want to use this service then it must be written
+        // in the constructor as well(just like injecting service per component level)
+    }
 
     myForm: FormGroup;//its a group or collection of controls(input text, checkbox, etc) in the form
 
@@ -23,6 +29,20 @@ export class SignUpComponent implements OnInit {
     }
 
     onSubmit() {
+        console.log(this.myForm.value.emailContr, this.myForm.value.passwordContr,
+            this.myForm.value.firstNameContr,
+            this.myForm.value.lastNameContr);
+        const userObj = new User(
+            this.myForm.value.emailContr,
+            this.myForm.value.passwordContr,
+            this.myForm.value.firstNameContr,
+            this.myForm.value.lastNameContr
+        );
+        this.authService.signup(userObj)
+            .subscribe(
+                data => console.log(data),
+                err => console.log(err)
+            )
         console.log(this.myForm);
         this.myForm.reset();//clear all the form fields
     }

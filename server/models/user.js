@@ -28,9 +28,9 @@ const UserSchema = new Schema({
     }
 });
 
-UserSchema.plugin(uniqueValidator); //make ensure that property with unique validation is applied to its property for UserSchema 
+// UserSchema.plugin(uniqueValidator); //make ensure that property with unique validation is applied to its property for UserSchema 
 
-UserModel = mongoose.model('user_collection', UserSchema)
+var UserModel = mongoose.model('user_collection', UserSchema)
 
 module.exports = {
     UserModel
