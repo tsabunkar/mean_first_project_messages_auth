@@ -29,9 +29,9 @@ export class SignUpComponent implements OnInit {
     }
 
     onSubmit() {
-        console.log(this.myForm.value.emailContr, this.myForm.value.passwordContr,
+     /*    console.log(this.myForm.value.emailContr, this.myForm.value.passwordContr,
             this.myForm.value.firstNameContr,
-            this.myForm.value.lastNameContr);
+            this.myForm.value.lastNameContr); */
         const userObj = new User(
             this.myForm.value.emailContr,
             this.myForm.value.passwordContr,

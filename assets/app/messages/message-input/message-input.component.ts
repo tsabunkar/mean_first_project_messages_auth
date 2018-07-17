@@ -25,12 +25,19 @@ export class MessageInputComponent implements OnInit {
          this.messageService.addMessage(message)
          // console.log(this.messageService.getMessages());
      } */
+     disableBtn : boolean;
+  /*    follow(){
+         console.log(this.disableBtn);
+        this.disableBtn = !this.disableBtn;
+    } */
+
     onSubmitOfForm(myform: NgForm) {
         // console.log(myform);
         // console.log(myform.value.contentName);
         console.log("5555555");
         console.log(myform.value);
         console.log(this.messageToLoadIntoInputFieldWhenEdit);
+        console.log(localStorage.getItem("myToken"));
 
         if (this.messageToLoadIntoInputFieldWhenEdit) {//messageToLoadIntoInputFieldWhenEdit is not undefined or null, 
             //which means we r creating editing a existing mesage

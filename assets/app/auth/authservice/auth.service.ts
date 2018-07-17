@@ -15,8 +15,6 @@ export class AuthService {
     //POST
     //http://localhost:4000/user
     signup(user: User) {
-        console.log("=======");
-        console.log(user);
         const httpHeaderOptions = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json',
@@ -30,6 +28,22 @@ export class AuthService {
                     console.log(response);
                     return response
                 }),
+                catchError(err => of(err))
+            )
+    }
+
+    //POST
+    //http://localhost:4000/user/signin
+    signin(user: User) {
+        const httpHeaderOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            })
+        };
+        const dataToSend = JSON.stringify(user);
+        return this.http.post<User>(this.url + '/signin', dataToSend, httpHeaderOptions)
+            .pipe(
+                map((response: Response) => response),
                 catchError(err => of(err))
             )
     }
