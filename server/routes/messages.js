@@ -3,6 +3,9 @@ var router = express.Router();
 var {
     MessageModel
 } = require('../models/message')
+var {
+    UserModel
+} = require('../models/user')
 const _ = require('lodash');
 const {
     ObjectID
@@ -35,14 +38,14 @@ router.get('/', function (req, res, next) {
 //authenticated by taking the token value which will be saved in LocalStorage of client browser when user logs in!!
 //this token value is passed as query parameter in the uri itself from client -> server (other way of passing the token value is using Header)
 router.use('/', function (req, res, next) {
-    console.log(req.query.token); //this will fetch the <tokenValue> which has been passed as query parameter 
+    // console.log(req.query.token); //this will fetch the <tokenValue> which has been passed as query parameter 
     //in the uri like- http://localhost:4000_____?token=<TOKENVALUE> 
     //for ex-
     //http://localhost:4000/message/5b4ef___?token=eyJjN543q0___
     //http://localhost:4000/message?token=eyJhbGci452395_____
 
     jwt.verify(req.query.token, 'tejas123', (err, decodedUserObj) => {
-        console.log(decodedUserObj);
+        // console.log(decodedUserObj);
 
         if (err) { //if token is invalid or expried then execute this block of code
             return res.status(401).json({
@@ -56,25 +59,46 @@ router.use('/', function (req, res, next) {
 
 //POST
 //localhost:3000/message/
+
 router.post('/', function (req, res, next) {
-    var message = new MessageModel({
-        content: req.body.content
-    })
-
-    message.save((err, result) => {
-        if (err) {
-            return res.status(500).json({
-                title: 'An error has occured bro!',
-                error: err
-            })
-        }
-
-        res.status(201).json({
-            message: "Saved Message!!",
-            obj: result
+    //fetching UserObject from token value using decode() method
+    var userObjectDecodedFromToken = jwt.decode(req.query.token)//it does not check the validaity[like-jwt.verify()], it will just decode the token and give u back the userObject
+    UserModel.findById(userObjectDecodedFromToken.user._id).then((userObject) => {
+        //find particular userObject from the decode_ObjectId from UserModel
+        var message = new MessageModel({
+            content: req.body.content,
+            user: userObject._id//objectId of the person/user who has created this messageObject
         })
 
-    })
+        message.save().then((messageObj) => {//save message Object
+            console.log(messageObj);
+            console.log(messageObj._id);
+            //messageModel collec is updated but we need to also update the userModel which has a property -> messages [] (messagesArray)
+            userObject.messages.push(messageObj._id);//from userObject which has messages array(property), push the messageObject _id in that array
+            userObject.save();//update that userObject(bcoz-a new value has been added to messages property in userMdoel collec)
+
+            res.status(201).json({
+                message: "Saved Message!!",
+                obj: messageObj
+            });
+        }).catch((err) => {
+            return res.status(500).json({
+                title: 'An error has occured while decoding the token from query parameter in uri',
+                error: err
+            })
+        });
+
+
+
+
+    }).catch((err) => {
+        return res.status(500).json({
+            title: 'An error has occured while decoding the token from query parameter in uri',
+            error: err
+        })
+    });
+
+
 });
 
 
@@ -139,8 +163,8 @@ router.patch('/:id', function (req, res, next) {
     }
 
     MessageModel.findOneAndUpdate({
-            _id: uriToUpdate
-        }, {
+        _id: uriToUpdate
+    }, {
             $set: rxedBody
         }, {
             new: true

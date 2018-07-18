@@ -101,3 +101,5 @@ it must be replaced with asynchronous error handling, using the error
   <b> EventEmitter</b> must be imported from "@angular/core" package but not from "event" package
 
 =================================================================================
+jwt.verify() -> verify method will check the validity and then decode and give the Object
+jwt.decode() -> decode method will just decode and give the Object
