@@ -31,9 +31,12 @@ router.get('/', function (req, res, next) {
 
 //using this middleware to know weather user is loggedin or not, inorder to redirect
 // to below routes ie- post,patch,delete of messages
+//i.e -allowing only then authenticated user to from CRUD opern on messages, we r verifiying the user is
+//authenticated by taking the token value which will be saved in LocalStorage of client browser when user logs in!!
+//this token value is passed as query parameter in the uri itself from client -> server (other way of passing the token value is using Header)
 router.use('/', function (req, res, next) {
     console.log(req.query.token); //this will fetch the <tokenValue> which has been passed as query parameter 
-    //in the uri like- http://localhost:4000_____?token=<tokenValue> 
+    //in the uri like- http://localhost:4000_____?token=<TOKENVALUE> 
     //for ex-
     //http://localhost:4000/message/5b4ef___?token=eyJjN543q0___
     //http://localhost:4000/message?token=eyJhbGci452395_____
