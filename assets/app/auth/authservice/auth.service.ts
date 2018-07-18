@@ -47,4 +47,14 @@ export class AuthService {
                 catchError(err => of(err))
             )
     }
+
+
+    logout() {
+       localStorage.clear();//clearing myToken and myuserId value which were stored in localStorage in the browser
+
+    }
+
+    isLoggedIn(){//if myToken has value and its not equal to null then, this method return true(which means user is logged in)
+        return localStorage.getItem('myToken') !== null;
+    }
 }

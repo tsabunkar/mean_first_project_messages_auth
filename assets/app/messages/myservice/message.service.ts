@@ -41,9 +41,15 @@ export class MessageService {
                 // 'Authorization': 'my-auth-token'
             })
         };
+        const token = localStorage.getItem('myToken')
+            ? '?token=' + localStorage.getItem('myToken')
+            : '';
+
         const dataToSend = JSON.stringify(message)
         //post() -> return type of ->Observable<Response> & //pipe() -> return type of ->Observable<{}>
-        let observableObj: Observable<Message> = this.http.post<Message>(this.url, dataToSend, httpHeaderOptions);
+
+        console.log(this.url + token);//http://localhost:4000/message?token=eyJhbGci452395_____
+        let observableObj: Observable<Message> = this.http.post<Message>(this.url + token, dataToSend, httpHeaderOptions);
         let pipeObj: Observable<Message> = observableObj.pipe<Message>(//any no of operations like map(), filter(),scan(),first(), last(), catchError(), mergeMap(), switchMap(),etc 
             map((response: Response) => {
                 console.log(response);
@@ -108,11 +114,15 @@ export class MessageService {
                 'Content-Type': 'application/json'
             })
         };
+        const token = localStorage.getItem('myToken')
+            ? '?token=' + localStorage.getItem('myToken')
+            : '';
+
 
         console.log("invoking update message");
         console.log(message.messageId);
         const dataToSend = JSON.stringify(message)
-        return this.http.patch<Message>(this.url + '/' + message.messageId, dataToSend, httpHeaderOptions)
+        return this.http.patch<Message>(this.url + '/' + message.messageId + token, dataToSend, httpHeaderOptions)
             .pipe(
                 map((response: Response) => { return response }),
                 catchError(err => of(err))
@@ -124,7 +134,12 @@ export class MessageService {
     //http://localhost:4000/message/124ef455D
     deletedMessage(message: Message): Observable<Message> {
         console.log("invoking delete message");
-        return this.http.delete<Message>(this.url + '/' + message.messageId)
+        const token = localStorage.getItem('myToken')
+            ? '?token=' + localStorage.getItem('myToken')
+            : '';
+
+        console.log(this.url + '/' + message.messageId + token);//http://localhost:4000/message/5b4ef___?token=eyJjN543q0___
+        return this.http.delete<Message>(this.url + '/' + message.messageId + token)
             .pipe(
                 map((response: Response) => {
                     if (response["obj"]) {//if valid object is returned, which means message got deleted

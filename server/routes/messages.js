@@ -7,6 +7,49 @@ const _ = require('lodash');
 const {
     ObjectID
 } = require('mongodb')
+var jwt = require('jsonwebtoken')
+
+//GETALL
+//localhost:3000/message/
+router.get('/', function (req, res, next) {
+    MessageModel.find()
+        .exec((err, documentMess) => { //exec -> Executes the query
+            if (err) {
+                return res.status(500).json({
+                    title: 'An error has occured bro!',
+                    error: err
+                })
+            }
+
+            res.status(201).json({
+                message: "Successfully retrieved",
+                listMessages: documentMess
+            })
+
+        })
+})
+
+//using this middleware to know weather user is loggedin or not, inorder to redirect
+// to below routes ie- post,patch,delete of messages
+router.use('/', function (req, res, next) {
+    console.log(req.query.token); //this will fetch the <tokenValue> which has been passed as query parameter 
+    //in the uri like- http://localhost:4000_____?token=<tokenValue> 
+    //for ex-
+    //http://localhost:4000/message/5b4ef___?token=eyJjN543q0___
+    //http://localhost:4000/message?token=eyJhbGci452395_____
+
+    jwt.verify(req.query.token, 'tejas123', (err, decodedUserObj) => {
+        console.log(decodedUserObj);
+
+        if (err) { //if token is invalid or expried then execute this block of code
+            return res.status(401).json({
+                title: 'Not Authenticated',
+                error: err
+            })
+        }
+        next();
+    })
+})
 
 //POST
 //localhost:3000/message/
@@ -31,25 +74,8 @@ router.post('/', function (req, res, next) {
     })
 });
 
-//GETALL
-//localhost:3000/message/
-router.get('/', function (req, res, next) {
-    MessageModel.find()
-        .exec((err, documentMess) => { //exec -> Executes the query
-            if (err) {
-                return res.status(500).json({
-                    title: 'An error has occured bro!',
-                    error: err
-                })
-            }
 
-            res.status(201).json({
-                message: "Successfully retrieved",
-                listMessages: documentMess
-            })
 
-        })
-})
 
 //PATCH
 //localhost:3000/message/ObjectId
@@ -100,7 +126,7 @@ router.get('/', function (req, res, next) {
 router.patch('/:id', function (req, res, next) {
     let uriToUpdate = req.params.id;
 
-    var rxedBody = _.pick(req.body, ['content'])//I shld allow to update only content property
+    var rxedBody = _.pick(req.body, ['content']) //I shld allow to update only content property
     if (!ObjectID.isValid(uriToUpdate)) { //If Id is not valid format then exec this if body
         response.status(404).send({
             title: 'An error has occured bro!, due to invalid format of id'
@@ -109,7 +135,13 @@ router.patch('/:id', function (req, res, next) {
         return
     }
 
-    MessageModel.findOneAndUpdate({ _id: uriToUpdate }, { $set: rxedBody }, { new: true })
+    MessageModel.findOneAndUpdate({
+            _id: uriToUpdate
+        }, {
+            $set: rxedBody
+        }, {
+            new: true
+        })
         .then((updatedMessObj) => {
 
             if (!updatedMessObj) {
@@ -137,7 +169,9 @@ router.patch('/:id', function (req, res, next) {
 //DELETE
 //localhost:3000/message/ObjectId
 router.delete('/:id', function (req, res, next) {
-    MessageModel.findOneAndRemove({ _id: req.params.id }).then((messObjDeleted) => {
+    MessageModel.findOneAndRemove({
+        _id: req.params.id
+    }).then((messObjDeleted) => {
         if (!messObjDeleted) {
             return res.status(500).json({
                 title: 'No message document is found in the collection for this particular ObjectId',
