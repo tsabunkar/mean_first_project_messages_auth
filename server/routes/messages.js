@@ -57,9 +57,9 @@ router.use('/', function (req, res, next) {
     })
 })
 
+
 //POST
 //localhost:3000/message/
-
 router.post('/', function (req, res, next) {
     //fetching UserObject from token value using decode() method
     var userObjectDecodedFromToken = jwt.decode(req.query.token)//it does not check the validaity[like-jwt.verify()], it will just decode the token and give u back the userObject
@@ -71,19 +71,26 @@ router.post('/', function (req, res, next) {
         })
 
         message.save().then((messageObj) => {//save message Object
-            console.log(messageObj);
-            console.log(messageObj._id);
+            // console.log(messageObj);
+            // console.log(messageObj._id);
             //messageModel collec is updated but we need to also update the userModel which has a property -> messages [] (messagesArray)
-            userObject.messages.push(messageObj._id);//from userObject which has messages array(property), push the messageObject _id in that array
-            userObject.save();//update that userObject(bcoz-a new value has been added to messages property in userMdoel collec)
+            userObject.messages.push(messageObj);//from userObject which has messages array(property), push the messageObject in that array
 
-            res.status(201).json({
-                message: "Saved Message!!",
-                obj: messageObj
+            userObject.save().then((result) => {//update that userObject(bcoz-a new value has been added to messages property in userMdoel collec)
+                res.status(201).json({
+                    message: "Saved Message!!",
+                    obj: messageObj
+                });
+            }).catch((err) => {
+                return res.status(500).json({
+                    title: 'An error has occured while saving the user Object',
+                    error: err
+                })
             });
+
         }).catch((err) => {
             return res.status(500).json({
-                title: 'An error has occured while decoding the token from query parameter in uri',
+                title: 'An error has occured while saving the message Object',
                 error: err
             })
         });
@@ -109,8 +116,9 @@ router.post('/', function (req, res, next) {
 //below we r finding and then again saving the document, here mongoose is ensuring that if same ObjectId then
 //instead of creating a new document just update the existing document
 //I didn't like this approach :)
+router.patch('/:id', function (req, res, next) {
+    var userObjectDecodedFromToken = jwt.decode(req.query.token)
 
-/* router.patch('/:id', function (req, res, next) {
     MessageModel.findById(req.params.id, (err, messObjRetrievedForParticId) => {
         console.log(messObjRetrievedForParticId);
         if (err) {
@@ -127,12 +135,19 @@ router.post('/', function (req, res, next) {
                 }
             })
         }
+        if (messObjRetrievedForParticId.user != userObjectDecodedFromToken.user._id) {
+            //if login user/client is not  same as the user who has created the message Object then execute this statm
+            return res.status(401).json({
+                title: 'Unauthorize user',
+                error: { message: 'User donot match' }
+            })
+        }
 
         messObjRetrievedForParticId.content = req.body.content; //assinging the updated mess from frontend to backend
         messObjRetrievedForParticId.save((err, result) => {//saving this document (just like new document),
             // but mongoose ensures that if same objectId is present then don't save as new docum but 
             //rather update the exisitng document
-            
+
             if (err) {
                 return res.status(500).json({
                     title: 'An error has occured bro!',
@@ -148,10 +163,15 @@ router.post('/', function (req, res, next) {
         });
 
     })
-}) */
+});
 
+
+
+/* 
 router.patch('/:id', function (req, res, next) {
+
     let uriToUpdate = req.params.id;
+    var userObjectDecodedFromToken = jwt.decode(req.query.token)
 
     var rxedBody = _.pick(req.body, ['content']) //I shld allow to update only content property
     if (!ObjectID.isValid(uriToUpdate)) { //If Id is not valid format then exec this if body
@@ -180,6 +200,14 @@ router.patch('/:id', function (req, res, next) {
                 })
             }
 
+            if (updatedMessObj.user != userObjectDecodedFromToken.user._id) {
+                //if login user/client is not  same as the user who has created the message Object then execute this statm
+                return res.status(401).json({
+                    title: 'Unauthorize user',
+                    error: { message: 'User donot match' }
+                })
+            }
+
             //success scenario
             res.status(200).json({
                 message: "Updated Message!!",
@@ -191,11 +219,56 @@ router.patch('/:id', function (req, res, next) {
                 error: err
             })
         });
-})
+}) */
+
+
 
 //DELETE
 //localhost:3000/message/ObjectId
 router.delete('/:id', function (req, res, next) {
+    var userObjectDecodedFromToken = jwt.decode(req.query.token);
+    MessageModel.findById(req.params.id, function (err, message) {
+        if (err) {
+            return res.status(500).json({
+                title: 'An error occurred',
+                error: err
+            });
+        }
+        if (!message) {
+            return res.status(500).json({
+                title: 'No Message Found in the collection!',
+                error: { message: 'Message not found' }
+            });
+        }
+        if (message.user != userObjectDecodedFromToken.user._id) {
+            //if login user/client is not  same as the user who has created the message Object then execute this statm
+            return res.status(401).json({
+                title: 'Not Authenticated',
+                error: { message: 'Users do not match' }
+            });
+        }
+        message.remove(function (err, result) {
+            if (err) {
+                return res.status(500).json({
+                    title: 'An error occurred',
+                    error: err
+                });
+            }
+            res.status(200).json({
+                message: 'Deleted message',
+                obj: result
+            });
+        });
+    });
+});
+
+
+
+//DELETE
+//localhost:3000/message/ObjectId
+/* 
+router.delete('/:id', function (req, res, next) {
+    var userObjectDecodedFromToken = jwt.decode(req.query.token)
     MessageModel.findOneAndRemove({
         _id: req.params.id
     }).then((messObjDeleted) => {
@@ -205,6 +278,14 @@ router.delete('/:id', function (req, res, next) {
                 error: {
                     message: 'ObjectId not found bro!'
                 }
+            })
+        }
+
+        if (messObjDeleted.user != userObjectDecodedFromToken.user._id) {
+            //if login user/client is not  same as the user who has created the message Object then execute this statm
+            return res.status(401).json({
+                title: 'Unauthorize user',
+                error: { message: 'User donot match' }
             })
         }
 
@@ -220,6 +301,8 @@ router.delete('/:id', function (req, res, next) {
             error: err
         })
     });
-})
+}) */
+
+
 
 module.exports = router;

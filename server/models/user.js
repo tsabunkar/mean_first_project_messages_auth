@@ -23,7 +23,7 @@ const UserSchema = new Schema({
     messages: { //having oneToMany relationship -> one user can send Many messages soo this field is an array
         type: [{
             type: Schema.Types.ObjectId,
-            ref:  'mess_collec' //ref->reference to another model
+            ref: 'mess_collec' //ref->reference to another model
         }]
     }
 });

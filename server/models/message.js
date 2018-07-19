@@ -16,9 +16,9 @@ const MessageSchema = new Schema({
 //post() -> do the functionality after action occured [action is specified in 1st argum]
 //pre() -> do the functionality before action occured [action is specified in 1st argum]
 //MONGOOSE MIDDLEWARE
-MessageSchema.post('findOneAndRemove', (message) => {
+MessageSchema.post('remove', (message) => {
     //this functionality is executed after findOneAndRemove action is executed
-    console.log(message.user);
+    // console.log(message.user);
     UserModel.findById(message.user, (err, user) => {//fetching the particular userObject
         user.messages.pull(message._id);//from that userobject removing the particular message ObjectId 
         user.save();//and again resaving that userObject to the UserModel collection
