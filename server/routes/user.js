@@ -6,7 +6,20 @@ var {
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken')
 
-router.post('/', function (req, res, next) {
+router.post('/', async function (req, res, next) {
+
+    let foundUser = await UserModel.findOne({ //wait here untill u finsh this task -> of finding the emai property from mongodb
+        "email": req.body.email
+    }, (err, resultVal) => { });
+
+    if (foundUser) { //check if the user with same emaiId present in the DB
+        res.status(409).json({
+            title: 'Singup with different emailId',
+            error: { message: 'Email already exist in the DB' }
+
+        })
+        return
+    }
 
     var userModel = new UserModel({
         firstName: req.body.firstName,
@@ -14,6 +27,8 @@ router.post('/', function (req, res, next) {
         password: bcrypt.hashSync(req.body.password, 10),
         email: req.body.email
     });
+
+
 
     userModel.save((err, result) => {
         if (err) {
