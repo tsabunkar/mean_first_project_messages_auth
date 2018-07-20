@@ -18,6 +18,8 @@ import { LogoutComponent } from './auth/logout/logout.component';
 import { SignInComponent } from './auth/signin/signin.component';
 import { SignUpComponent } from './auth/signup/signup.component';
 import { AuthService } from './auth/authservice/auth.service';
+import { ErrorComponent } from './errors/error.component';
+import { ErrorService } from './errors/error.service';
 
 
 @NgModule({
@@ -32,7 +34,8 @@ import { AuthService } from './auth/authservice/auth.service';
         PageNotFoundComponent,
         LogoutComponent,
         SignInComponent,
-        SignUpComponent
+        SignUpComponent,
+        ErrorComponent
 
     ],
     imports: [
@@ -44,7 +47,7 @@ import { AuthService } from './auth/authservice/auth.service';
     ],//builtin & user-define Modules(package)
     //myAppRouting-> user-define module(in this we r twiking router module)
     bootstrap: [AppComponent],
-    providers: [AuthService]//injecting service at Application level, thus this service(AuthService) can be used throught the application
+    providers: [AuthService, ErrorService]//injecting service at Application level, thus this service(AuthService) can be used throught the application
 })
 export class AppModule {
 

@@ -60,7 +60,9 @@ export class MessageInputComponent implements OnInit {
                 (mess: Message) => {
                     console.log(mess);
                 },
-                err => { console.log(err); },
+                err => { 
+                    console.log('Inside err method');
+                    console.log(err); },
 
             )
         }

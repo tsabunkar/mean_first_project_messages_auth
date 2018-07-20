@@ -5,11 +5,12 @@ import { HttpHeaders } from '@angular/common/http';
 // import 'rxjs/Rx';//error :  Cannot find module "rxjs-compat"
 import { Observable, throwError, of } from "rxjs";
 import { catchError, map } from 'rxjs/operators';
+import { ErrorService } from '../../errors/error.service';
 
 
 @Injectable()
 export class MessageService {
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, private errorService: ErrorService) { }
 
     private messageList: Message[] = [];
     private url: string = 'http://localhost:4000/message';
@@ -55,11 +56,15 @@ export class MessageService {
                 console.log(response);
                 console.log(response.toString());
                 const respondedMessage = response["obj"];
-                const newlyCreatedMess = new Message(respondedMessage.content, "Admin", respondedMessage._id, null)
+                const newlyCreatedMess = new Message(respondedMessage.content, respondedMessage.user.firstName, respondedMessage._id, respondedMessage.user._id)
                 this.messageList.push(newlyCreatedMess);//if new message is created then only push that newlyCreatedMessage into the MessageList Array
                 return newlyCreatedMess;//must return (or else) when subscribe we will get undefined
             }),
-            catchError(err => of(err))//of (operator)->	ArrayObservable
+            // catchError(err => of(err))//of (operator)->	ArrayObservable
+            catchError(err => {
+                this.errorService.handlerError(err);
+                throw err;
+            })
         );
 
         return pipeObj;
@@ -88,13 +93,16 @@ export class MessageService {
                     let transformedBackendDtoToFrontendDto: Message[] = [];
                     for (const mess of listOfmessagesFrmBackend) {
                         // console.log(mess);
-                        transformedBackendDtoToFrontendDto.push(new Message(mess.content, "Admin", mess._id, null))
+                        transformedBackendDtoToFrontendDto.push(new Message(mess.content, mess.user.firstName, mess._id, mess.user._id))
                     };
                     this.messageList = transformedBackendDtoToFrontendDto;
 
                     return transformedBackendDtoToFrontendDto;
                 }),
-                catchError(err => of(err))
+                catchError(err => {
+                    this.errorService.handlerError(err);
+                    throw err;
+                })
             )
     }
 
@@ -125,7 +133,10 @@ export class MessageService {
         return this.http.patch<Message>(this.url + '/' + message.messageId + token, dataToSend, httpHeaderOptions)
             .pipe(
                 map((response: Response) => { return response }),
-                catchError(err => of(err))
+                catchError(err => {
+                    this.errorService.handlerError(err);
+                    throw err;
+                })
             );
 
     }
@@ -148,7 +159,10 @@ export class MessageService {
                         return response
                     }
                 }),
-                catchError(err => of(err))
+                catchError(err => {
+                    this.errorService.handlerError(err);
+                    throw err;
+                })
             )
     }
 

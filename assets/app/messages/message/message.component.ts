@@ -39,7 +39,12 @@ export class MessageComponent implements OnInit {
                 result => {
                     console.log(result);
                 },
-                err =>{console.log( err);}
+                err => { console.log(err); }
             )
+    }
+
+    belongsToUser() {
+        return localStorage.getItem('myuserId') == this.msgObj.userId
+        //return true, if user_ObjectId is same as current msgObject userId property
     }
 }

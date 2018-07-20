@@ -16,6 +16,9 @@ var jwt = require('jsonwebtoken')
 //localhost:3000/message/
 router.get('/', function (req, res, next) {
     MessageModel.find()
+        .populate('user', 'firstName') //we get the userId from the user property in message object, but wont get the complete properties of user object
+        //populate() -> we can access the compelete properties of user object using message object since there is reference b/w both these collection
+        //using populate method we can access the firstName property of userobject from messageObject
         .exec((err, documentMess) => { //exec -> Executes the query
             if (err) {
                 return res.status(500).json({
@@ -26,7 +29,7 @@ router.get('/', function (req, res, next) {
 
             res.status(201).json({
                 message: "Successfully retrieved",
-                listMessages: documentMess
+                listMessages: documentMess //I shld pass messageObject as well as userobject firstName, bcoz -> In message component we need to show the name of person who has created that message
             })
 
         })
@@ -62,21 +65,21 @@ router.use('/', function (req, res, next) {
 //localhost:3000/message/
 router.post('/', function (req, res, next) {
     //fetching UserObject from token value using decode() method
-    var userObjectDecodedFromToken = jwt.decode(req.query.token)//it does not check the validaity[like-jwt.verify()], it will just decode the token and give u back the userObject
+    var userObjectDecodedFromToken = jwt.decode(req.query.token) //it does not check the validaity[like-jwt.verify()], it will just decode the token and give u back the userObject
     UserModel.findById(userObjectDecodedFromToken.user._id).then((userObject) => {
         //find particular userObject from the decode_ObjectId from UserModel
         var message = new MessageModel({
             content: req.body.content,
-            user: userObject._id//objectId of the person/user who has created this messageObject
+            user: userObject //storing complete userobject of the person/user who has created this messageObject
+            //but internally mongoose only store ObjectId of userObject and then refer to the user_collecn
+            //thus here we have not use populate() method
         })
 
-        message.save().then((messageObj) => {//save message Object
-            // console.log(messageObj);
-            // console.log(messageObj._id);
+        message.save().then((messageObj) => { //save message Object
             //messageModel collec is updated but we need to also update the userModel which has a property -> messages [] (messagesArray)
-            userObject.messages.push(messageObj);//from userObject which has messages array(property), push the messageObject in that array
+            userObject.messages.push(messageObj._id); //from userObject which has messages array(property), push the messageObject Id in that array
 
-            userObject.save().then((result) => {//update that userObject(bcoz-a new value has been added to messages property in userMdoel collec)
+            userObject.save().then((result) => { //update that userObject(bcoz-a new value has been added to messages property in userMdoel collec)
                 res.status(201).json({
                     message: "Saved Message!!",
                     obj: messageObj
@@ -95,16 +98,12 @@ router.post('/', function (req, res, next) {
             })
         });
 
-
-
-
     }).catch((err) => {
         return res.status(500).json({
             title: 'An error has occured while decoding the token from query parameter in uri',
             error: err
         })
     });
-
 
 });
 
@@ -139,12 +138,14 @@ router.patch('/:id', function (req, res, next) {
             //if login user/client is not  same as the user who has created the message Object then execute this statm
             return res.status(401).json({
                 title: 'Unauthorize user',
-                error: { message: 'User donot match' }
+                error: {
+                    message: 'User donot match'
+                }
             })
         }
 
         messObjRetrievedForParticId.content = req.body.content; //assinging the updated mess from frontend to backend
-        messObjRetrievedForParticId.save((err, result) => {//saving this document (just like new document),
+        messObjRetrievedForParticId.save((err, result) => { //saving this document (just like new document),
             // but mongoose ensures that if same objectId is present then don't save as new docum but 
             //rather update the exisitng document
 
@@ -237,14 +238,18 @@ router.delete('/:id', function (req, res, next) {
         if (!message) {
             return res.status(500).json({
                 title: 'No Message Found in the collection!',
-                error: { message: 'Message not found' }
+                error: {
+                    message: 'Message not found'
+                }
             });
         }
         if (message.user != userObjectDecodedFromToken.user._id) {
             //if login user/client is not  same as the user who has created the message Object then execute this statm
             return res.status(401).json({
                 title: 'Not Authenticated',
-                error: { message: 'Users do not match' }
+                error: {
+                    message: 'Users do not match'
+                }
             });
         }
         message.remove(function (err, result) {
