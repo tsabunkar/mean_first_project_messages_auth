@@ -20,17 +20,16 @@ const UserSchema = new Schema({
         required: true,
         unique: true //unique validation don't maintain the uniqunees for this email prop
     },
-    messages: { //having oneToMany relationship -> one user can send Many messages soo this field is an array
-        type: [{
-            type: Schema.Types.ObjectId,
-            ref:  'mess_collec' //ref->reference to another model
-        }]
-    }
+    messages: [{ //having oneToMany relationship -> one user can send Many messages soo this field is an array
+        type: Schema.Types.ObjectId,
+        ref: 'mess_collec' //ref->reference to another model
+    }]
+
 });
 
-UserSchema.plugin(uniqueValidator); //make ensure that property with unique validation is applied to its property for UserSchema 
+// UserSchema.plugin(uniqueValidator); //make ensure that property with unique validation is applied to its property for UserSchema 
 
-UserModel = mongoose.model('user_collection', UserSchema)
+var UserModel = mongoose.model('user_collection', UserSchema)
 
 module.exports = {
     UserModel

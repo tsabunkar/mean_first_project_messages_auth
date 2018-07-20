@@ -1,0 +1,14 @@
+<div class="col-md-8 col-md-offset-2">
+    <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+        <!--property binding [formGroup] telling Angular dont use html5 validation rather use the form validation of myform define in (.ts) file -->
+        <div class="form-group">
+            <label for="email">email</label>
+            <input type="text" id="email" class="form-control" formControlName="emailContr">
+        </div>
+        <div class="form-group">
+            <label for="password">password</label>
+            <input type="text" id="password" class="form-control" formControlName="passwordContr">
+        </div>
+        <button class="btn btn-primary" type="submit" [disabled]="!myForm.valid">submit</button>
+    </form>
+</div>

@@ -1,7 +1,7 @@
 <div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-           <my-message></my-message>
-        </div>
-    </div>
+    <my-header></my-header>
+    <br>
+    <!-- this router-outlet tag ->tells angular, in this place u shld load/render the components specified in app.routing.ts file-->
+    <router-outlet></router-outlet>
 </div>
+<my-app-error></my-app-error>

@@ -1,0 +1,19 @@
+<header class="row spacing">
+    <nav class="col-md-8 col-md-offset-2">
+        <ul class="nav nav-tabs">
+            <li routerLinkActive="active">
+                <a [routerLink]="['signin']">Signin</a>
+            </li>
+            <li routerLinkActive="active">
+                <a *ngIf="!isUserLoggedIn()" [routerLink]="['signup']">Signup</a>
+            </li>
+            <li routerLinkActive="active">
+                <a *ngIf="isUserLoggedIn()" [routerLink]="['logout']">Logout</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<div class="row spacing">
+    <router-outlet></router-outlet>
+    <!-- this outer router-outlet is related to auth component, so it will be loaded only when url is 'localhost:3000/auth/' -->
+</div>

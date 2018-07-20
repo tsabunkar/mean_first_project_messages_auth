@@ -1,0 +1,16 @@
+<input type="text" [(ngModel)]="msgObj.content">
+<!-- two way binding -->
+<div class="panel panel-default" [ngStyle]="{backgroundColor: mycolor}" (mouseenter)="mycolor = 'white'" (mouseleave)="mycolor = 'lightblue'">
+    <div class="panel-body">
+        {{msgObj.content}}
+    </div>
+    <footer class="panel-footer">
+        <div class="author">
+            {{msgObj.username}}
+        </div>
+        <div class="config" *ngIf="belongsToUser()">
+            <a (click)="onEdit()">Edit</a> |
+            <a (click)="onDelete()">Delete</a>
+        </div>
+    </footer>
+</div>

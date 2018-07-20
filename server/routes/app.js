@@ -4,6 +4,7 @@ var {
     UserModel
 } = require('../models/user')
 
+//all the routes r redirected to index.hbs, soo that angular can take over that routing
 router.get('/', function (req, res, next) {
     res.render('index.hbs');
 });
